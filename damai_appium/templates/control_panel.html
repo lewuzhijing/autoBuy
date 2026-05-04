@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>抢票控制台</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #f6f7fb; color: #222; }
+    .wrap { max-width: 960px; margin: 24px auto; padding: 0 16px; }
+    .panel { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-bottom: 16px; }
+    h1 { margin-top: 0; font-size: 24px; }
+    .btns { display: flex; gap: 10px; flex-wrap: wrap; }
+    button { border: 0; border-radius: 6px; padding: 10px 14px; cursor: pointer; color: #fff; }
+    .run { background: #1f8b4c; }
+    .restart { background: #1769aa; }
+    .stop { background: #c62828; }
+    .debug { background: #7b1fa2; }
+    .refresh { background: #6d4c41; }
+    .status-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 8px; }
+    .item { background: #fafafa; border: 1px solid #eee; border-radius: 6px; padding: 10px; }
+    .ok { color: #1f8b4c; font-weight: 600; }
+    .bad { color: #c62828; font-weight: 600; }
+    #logBox { background: #111; color: #e8e8e8; min-height: 320px; border-radius: 6px; padding: 12px; overflow: auto; white-space: pre-wrap; font-family: Consolas, monospace; font-size: 12px; }
+    #msg { margin-top: 8px; min-height: 20px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1>抢票控制台</h1>
+      <div class="btns">
+        <button class="run" onclick="act('run')">运行抢票</button>
+        <button class="restart" onclick="act('restart')">重启抢票</button>
+        <button class="stop" onclick="act('stop')">停止抢票</button>
+        <button class="debug" onclick="act('debugEnterSeatDetail')">进入选座购买详情页（调试）</button>
+        <button class="refresh" onclick="refreshAll()">刷新状态</button>
+      </div>
+      <div id="msg"></div>
+    </div>
+
+    <div class="panel">
+      <h2>运行状态</h2>
+      <div class="status-grid">
+        <div class="item">脚本状态：<span id="ticketRunning">-</span></div>
+        <div class="item">脚本 PID：<span id="ticketPid">-</span></div>
+        <div class="item">运行时长：<span id="ticketUptime">-</span></div>
+        <div class="item">最近退出码：<span id="ticketExit">-</span></div>
+        <div class="item">Appium 状态：<span id="appiumHealth">-</span></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>实时日志（最新 300 行）</h2>
+      <div id="logBox"></div>
+    </div>
+  </div>
+
+  <script>
+    async function callApi(url, method = "GET") {
+      const res = await fetch(url, { method });
+      return await res.json();
+    }
+
+    function setMessage(text, ok = true) {
+      const el = document.getElementById("msg");
+      el.textContent = text || "";
+      el.className = ok ? "ok" : "bad";
+    }
+
+    function renderStatus(status) {
+      document.getElementById("ticketRunning").textContent = status.running ? "运行中" : "已停止";
+      document.getElementById("ticketRunning").className = status.running ? "ok" : "bad";
+      document.getElementById("ticketPid").textContent = status.pid ?? "-";
+      document.getElementById("ticketUptime").textContent = (status.uptime_sec ?? 0) + " 秒";
+      document.getElementById("ticketExit").textContent = status.last_exit_code ?? "-";
+    }
+
+    function renderAppium(healthy, message) {
+      const el = document.getElementById("appiumHealth");
+      el.textContent = healthy ? "可用" : "不可用";
+      el.className = healthy ? "ok" : "bad";
+      el.title = message || "";
+    }
+
+    function renderLogs(text) {
+      const box = document.getElementById("logBox");
+      box.textContent = text || "";
+      box.scrollTop = box.scrollHeight;
+    }
+
+    async function refreshStatus() {
+      const rs = await callApi("/api/status");
+      if (rs.ok) {
+        renderStatus(rs.data);
+      }
+    }
+
+    async function refreshAppium() {
+      const ra = await callApi("/api/appium-status");
+      renderAppium(!!(ra.data && ra.data.healthy), ra.message);
+    }
+
+    async function refreshLogs() {
+      const rl = await callApi("/api/logs");
+      if (rl.ok && rl.data) {
+        renderLogs(rl.data.text);
+      }
+    }
+
+    async function refreshAll() {
+      try {
+        await Promise.all([refreshStatus(), refreshAppium(), refreshLogs()]);
+      } catch (err) {
+        setMessage("刷新失败: " + err, false);
+      }
+    }
+
+    async function act(action) {
+      const mapping = {
+        run: "/api/run",
+        restart: "/api/restart",
+        stop: "/api/stop",
+        debugEnterSeatDetail: "/api/debug-enter-seat-detail"
+      };
+      try {
+        const r = await callApi(mapping[action], "POST");
+        setMessage(r.message, !!r.ok);
+        await refreshAll();
+      } catch (err) {
+        setMessage("操作失败: " + err, false);
+      }
+    }
+
+    refreshAll();
+    setInterval(refreshAll, 2000);
+  </script>
+</body>
+</html>

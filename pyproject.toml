@@ -12,6 +12,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 selenium = "4.18.1"
+flask = "^3.0.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.0.0"
@@ -21,6 +22,8 @@ pytest-mock = "^3.14.0"
 [tool.poetry.scripts]
 test = "pytest:main"
 tests = "pytest:main"
+control-panel = "damai_appium.control_panel:run_control_panel"
+control-panel-dev = "damai_appium.control_panel:run_control_panel_dev"
 
 [build-system]
 requires = ["poetry-core"]

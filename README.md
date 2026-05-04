@@ -163,6 +163,21 @@ cd damai_appium
 ANDROID_HOME=/Users/shengwang/Library/Android/sdk ANDROID_SDK_ROOT=/Users/shengwang/Library/Android/sdk python damai_app_v2.py
 ```
 
+#### 6. 启动控制台（支持热重载）
+```bash
+# 普通模式（不热重载）
+poetry run control-panel
+
+# 开发模式（热重载，修改 control_panel.py / 模板后自动生效）
+poetry run control-panel-dev
+```
+
+也可以直接使用 Python 启动并显式开启 debug：
+```bash
+cd damai_appium
+python control_panel.py --debug
+```
+
 ### Web端抢票
 
 #### 1. 配置参数

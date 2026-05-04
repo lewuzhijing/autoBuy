@@ -9,7 +9,8 @@ import json
 
 
 class Config:
-    def __init__(self, server_url, keyword, users, city, date, price, price_index, if_commit_order):
+    def __init__(self, server_url, keyword, users, city, date, price, price_index, if_commit_order,
+                 enable_refresh=True, max_refresh_attempts=0, refresh_interval=0.2):
         self.server_url = server_url
         self.keyword = keyword
         self.users = users
@@ -18,6 +19,9 @@ class Config:
         self.price = price
         self.price_index = price_index
         self.if_commit_order = if_commit_order
+        self.enable_refresh = enable_refresh
+        self.max_refresh_attempts = max_refresh_attempts
+        self.refresh_interval = refresh_interval
 
     @staticmethod
     def load_config():
@@ -30,4 +34,7 @@ class Config:
                       config['date'],
                       config['price'],
                       config['price_index'],
-                      config['if_commit_order'])
+                      config['if_commit_order'],
+                      enable_refresh=config.get('enable_refresh', True),
+                      max_refresh_attempts=config.get('max_refresh_attempts', 0),
+                      refresh_interval=config.get('refresh_interval', 0.2))
