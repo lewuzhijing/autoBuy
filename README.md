@@ -1,10 +1,10 @@
 # 大麦抢票自动化系统
 
-一个基于Selenium和Appium的大麦网抢票自动化工具，支持Web端和移动端抢票。
+一个基于Appium的大麦网抢票自动化工具，支持移动端抢票。
 
 ## 🚀 功能特性
 
-- **双端支持**：支持Web端（Selenium）和移动端（Appium）抢票
+- **移动端抢票**：支持移动端（Appium）抢票
 - **智能抢票**：自动选择城市、票价、观演人员
 - **高性能**：优化的点击策略，适合抢票场景
 - **可配置**：灵活的配置文件，支持多种演出设置
@@ -16,10 +16,6 @@
 - **Python**: 3.9+
 - **Node.js**: 20.19.0+ 或 22.12.0+ 或 24.0.0+
 - **操作系统**: macOS / Windows / Linux
-
-### Web端抢票
-- **Chrome浏览器**: 最新版本
-- **ChromeDriver**: 自动下载
 
 ### 移动端抢票
 - **Android SDK**: 已配置环境变量
@@ -109,21 +105,6 @@ adb devices
 | `price_index` | number | 票价索引（从0开始） | `1` |
 | `if_commit_order` | boolean | 是否自动提交订单 | `true` |
 
-### Web端配置 (config.json)
-
-```json
-{
-  "index_url": "https://www.damai.cn/",
-  "login_url": "https://passport.damai.cn/login",
-  "target_url": "https://detail.damai.cn/item.htm?id=xxx",
-  "users": ["张三", "李四"],
-  "city": "广州",
-  "date": "2023-10-28",
-  "price": "1039",
-  "if_commit_order": true
-}
-```
-
 ## 🚀 使用方法
 
 ### 移动端抢票（推荐）
@@ -176,17 +157,6 @@ poetry run control-panel-dev
 ```bash
 cd damai_appium
 python control_panel.py --debug
-```
-
-### Web端抢票
-
-#### 1. 配置参数
-编辑 `damai/config.json` 文件，设置目标演出URL和其他参数。
-
-#### 2. 运行抢票脚本
-```bash
-cd damai
-python damai.py
 ```
 
 ## 🔧 故障排除
@@ -261,17 +231,13 @@ adb shell pm list packages | grep damai
 
 ```
 ticket-purchase/
-├── damai/                    # Web端抢票
-│   ├── damai.py             # 主程序
-│   ├── config.py            # 配置类
-│   ├── config.json          # 配置文件
-│   └── requirements.txt      # 依赖文件
 ├── damai_appium/             # 移动端抢票
 │   ├── damai_app_v2.py      # 优化版主程序
 │   ├── damai_app.py         # 原版主程序
+│   ├── control_panel.py     # Flask 控制面板
 │   ├── config.py            # 配置类
 │   ├── config.jsonc         # 配置文件
-│   └── app.md               # 应用说明
+│   └── templates/           # 控制面板模板
 ├── tests/                    # 测试文件
 ├── doc/                      # 文档
 ├── img/                      # 图片资源

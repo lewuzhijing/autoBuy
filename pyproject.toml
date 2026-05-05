@@ -5,8 +5,8 @@ description = "Automated ticket purchasing system for Damai.com"
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
 packages = [
-    { include = "damai" },
-    { include = "damai_appium" }
+    { include = "damai_appium" },
+    { include = "damai_v3" },
 ]
 
 [tool.poetry.dependencies]
@@ -24,6 +24,7 @@ test = "pytest:main"
 tests = "pytest:main"
 control-panel = "damai_appium.control_panel:run_control_panel"
 control-panel-dev = "damai_appium.control_panel:run_control_panel_dev"
+v3-start = "damai_v3.main:main"
 
 [build-system]
 requires = ["poetry-core"]
@@ -39,8 +40,8 @@ addopts = [
     "-ra",
     "--strict-markers",
     "--strict-config",
-    "--cov=damai",
     "--cov=damai_appium",
+    "--cov=damai_v3",
     "--cov-branch",
     "--cov-report=term-missing:skip-covered",
     "--cov-report=html:htmlcov",
@@ -54,7 +55,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["damai", "damai_appium"]
+source = ["damai_appium", "damai_v3"]
 omit = [
     "*/tests/*",
     "*/__init__.py",

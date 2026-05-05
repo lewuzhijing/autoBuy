@@ -12,8 +12,7 @@ class TestInfrastructureSetup:
     
     def test_project_structure_exists(self):
         """Test that the required project structure is in place."""
-        # Check that main packages exist
-        assert Path("damai").exists(), "damai package directory should exist"
+        # Check that main package exists
         assert Path("damai_appium").exists(), "damai_appium package directory should exist"
         
         # Check that test directories exist
@@ -42,13 +41,7 @@ class TestInfrastructureSetup:
         assert "@pytest.fixture" in content, "conftest.py should contain fixtures"
     
     def test_packages_importable(self):
-        """Test that the main packages can be imported."""
-        try:
-            import damai
-            assert damai is not None
-        except ImportError as e:
-            pytest.fail(f"Failed to import damai package: {e}")
-        
+        """Test that the main package can be imported."""
         try:
             import damai_appium
             assert damai_appium is not None
@@ -148,7 +141,6 @@ class TestCoverageConfiguration:
         content = pyproject_path.read_text()
         
         # Check coverage settings
-        assert "--cov=damai" in content
         assert "--cov=damai_appium" in content
         assert "--cov-fail-under=80" in content
         assert "htmlcov" in content
