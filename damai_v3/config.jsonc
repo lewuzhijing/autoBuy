@@ -1,0 +1,15 @@
+{
+  "server_url": "http://127.0.0.1:4723",
+  "keyword": "郁可唯",
+  "users": [
+    "赵佩雯"
+  ],
+  "city": "北京",
+  "date": "6.06",
+  "price": "内场1280元",
+  "price_index": 5,
+  "if_commit_order": false,
+  "enable_refresh": true,
+  "max_refresh_attempts": 0,
+  "refresh_interval": 0.2
+}

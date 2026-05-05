@@ -14,9 +14,9 @@ from flask import Flask, jsonify, render_template
 
 BASE_DIR = Path(__file__).resolve().parent
 LOG_PATH = BASE_DIR / "ticket_runner.log"
-SCRIPT_PATH_V2 = BASE_DIR / "damai_app_v2.py"
-SCRIPT_PATH_V3 = BASE_DIR.parent / "damai_v3" / "main.py"
-SCRIPT_PATH = SCRIPT_PATH_V2  # 默认 V2，可运行时切换
+SCRIPT_PATH_V2 = BASE_DIR.parent / "damai_appium" / "damai_app_v2.py"
+SCRIPT_PATH_V3 = BASE_DIR / "main.py"
+SCRIPT_PATH = SCRIPT_PATH_V3  # V3 目录下默认用 V3
 APPIUM_STATUS_URL = "http://127.0.0.1:4723/status"
 DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 5001
@@ -369,15 +369,15 @@ def run_control_panel():
     )
     parser.add_argument(
         "--version",
-        default="v2",
+        default="v3",
         choices=["v2", "v3"],
-        help="选择抢票脚本版本（默认 v2）",
+        help="选择抢票脚本版本（默认 v3）",
     )
     args = parser.parse_args()
 
     global SCRIPT_PATH
-    if args.version == "v3":
-        SCRIPT_PATH = SCRIPT_PATH_V3
+    if args.version == "v2":
+        SCRIPT_PATH = SCRIPT_PATH_V2
 
     app.run(host=args.host, port=args.port, debug=args.debug, use_reloader=args.debug)
 
